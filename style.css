@@ -1,0 +1,77 @@
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  background-color: #f0f0f0;
+  padding: 32px;
+}
+
+h1 {
+  margin-bottom: 24px;
+  color: #333;
+}
+
+#hangman-display {
+  max-width: 300px;
+  background-color: #fff;
+  padding: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#word-display {
+  font-size: 24px;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+#letter-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Add this line */
+  gap: 8px;
+  background-color: #fff;
+  padding: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#letter-input {
+  width: 100%;
+  max-width: 150px;
+}
+
+#submit-button,
+#reset-button {
+  width: 100%;
+  max-width: 150px;
+  padding: 8px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+#submit-button:hover,
+#reset-button:hover {
+  background-color: #0056b3;
+}
+
+#submit-button:disabled,
+#reset-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+#attempts,
+#guessed-letters,
+#message {
+  margin-bottom: 8px;
+  color: #333;
+}
