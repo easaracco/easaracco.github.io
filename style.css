@@ -75,3 +75,39 @@ h1 {
   margin-bottom: 8px;
   color: #333;
 }
+
+#virtual-keyboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.virtual-key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.virtual-key:hover {
+  background-color: #0056b3;
+}
+
+.virtual-key.disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}

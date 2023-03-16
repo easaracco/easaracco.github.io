@@ -94,5 +94,91 @@ resetButton.addEventListener('click', () => {
     initializeGame();
     submitButton.disabled = false;
 });
+
+const virtualKeyboard = document.getElementById('virtual-keyboard');
+
+function createVirtualKeyboard() {
+  const keyboardLayout = [
+    ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+    ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+    ['z', 'x', 'c', 'v', 'b', 'n', 'm'],
+  ];
+
+  for (const row of keyboardLayout) {
+    const rowDiv = document.createElement('div');
+    rowDiv.classList.add('keyboard-row');
+
+    for (const letter of row) {
+      const key = document.createElement('div');
+      key.textContent = letter;
+      key.classList.add('virtual-key');
+      key.setAttribute('data-letter', letter);
+
+      // Updated event listener for the virtual key click event
+      key.addEventListener('click', () => {
+        handleLetterGuess(key.textContent, key);
+      });
+
+      rowDiv.appendChild(key);
+    }
+    virtualKeyboard.appendChild(rowDiv);
+  }
+}
+
+function handleLetterGuess(letter, virtualKey) {
+  if (letter && !guessedLetters.includes(letter)) {
+    guessedLetters.push(letter);
+
+    if (!word.includes(letter)) {
+      attempts--;
+    }
+
+    updateHangmanDisplay();
+    updateWordDisplay();
+    updateAttemptsDisplay();
+    updateGuessedLettersDisplay();
+
+    if (virtualKey) {
+      virtualKey.classList.add('disabled');
+      virtualKey.disabled = true;
+    }
+
+    if (attempts === 0) {
+      message.textContent = `Game over! The word was "${word}".`;
+      disableVirtualKeyboard();
+    } else if (checkVictory()) {
+      message.textContent = 'Congratulations, you won!';
+      disableVirtualKeyboard();
+    }
+  }
+}
+
+
+function disableVirtualKeyboard() {
+  const keys = document.querySelectorAll('.virtual-key');
+  keys.forEach((key) => {
+    key.classList.add('disabled');
+    key.disabled = true;
+  });
+}
+
+function getVirtualKey(letter) {
+  return document.querySelector(`.virtual-key:not(.disabled)[data-letter="${letter}"]`);
+}
+
+letterInput.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    const letter = letterInput.value.toLowerCase();
+    const virtualKey = getVirtualKey(letter);
+    if (virtualKey) {
+      handleLetterGuess(letter, virtualKey);
+    }
+    letterInput.value = '';
+  }
+});
+
+createVirtualKeyboard();
+
   
 initializeGame();
