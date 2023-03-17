@@ -46,7 +46,7 @@ async function fetchRandomWord(lengthOption) {
   }
 
   do {
-    const response = await fetch('https://random-word-api.herokuapp.com/word?number=1');
+    const response = await fetch('https://random-word-api.herokuapp.com/word?lang=en');
     const words = await response.json();
     word = words[0];
   } while (word.length < minLength || word.length > maxLength);
