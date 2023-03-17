@@ -30,19 +30,19 @@ async function fetchRandomWord(lengthOption) {
   switch (lengthOption) {
     case 'short':
       minLength = 1;
-      maxLength = 4;
+      maxLength = 6;
       break;
     case 'medium':
-      minLength = 5;
-      maxLength = 10;
+      minLength = 7;
+      maxLength = 12;
       break;
     case 'long':
-      minLength = 11;
+      minLength = 12;
       maxLength = Infinity;
       break;
     default:
-      minLength = 1;
-      maxLength = 10;
+      minLength = 9;
+      maxLength = 14;
   }
 
   do {
@@ -152,6 +152,11 @@ function createVirtualKeyboard() {
 }
 
 function handleLetterGuess(letter, virtualKey) {
+  // If the virtualKey is provided and it's disabled, do nothing
+  if (virtualKey && virtualKey.disabled) {
+    return;
+  }
+
   if (letter && !guessedLetters.includes(letter)) {
     guessedLetters.push(letter);
 
