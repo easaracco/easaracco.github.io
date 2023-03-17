@@ -181,4 +181,8 @@ button#start-game {
   margin: 4px 2px;
   cursor: pointer;
 }
-
+@media (max-width: 768px) {
+  #letter-form {
+    display: none;
+  }
+}

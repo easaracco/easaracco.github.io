@@ -169,8 +169,7 @@ function handleLetterGuess(letter, virtualKey) {
       virtualKey.disabled = true;
     }
 
-    if (attempts === 0) {
-      message.textContent = `Game over! The word was "${word}".`;
+    if (checkGameOver()) {
       disableVirtualKeyboard();
     } else if (checkVictory()) {
       message.textContent = 'Congratulations, you won!';
@@ -205,6 +204,10 @@ letterInput.addEventListener('keydown', (event) => {
 
 async function startGame() {
   const wordLength = document.getElementById('word-length').value;
+
+  // Disable input and virtual keyboard while loading
+  disableInputAndKeyboard();
+
   // Show the loading image and hide the hangman image
   hangmanDisplay.style.display = 'none';
   loadingImage.style.display = 'block';
@@ -213,16 +216,32 @@ async function startGame() {
   attempts = 6;
   guessedLetters = [];
   message.textContent = '';
-  enableVirtualKeyboard();
+
+  // Enable input and virtual keyboard after loading
+  enableInputAndKeyboard();
 
   // Hide the loading image and show the hangman image
   loadingImage.style.display = 'none';
   hangmanDisplay.style.display = 'block';
-
+  
+  const losingModal = document.getElementById('losing-modal');
+  losingModal.style.display = 'none';
   updateHangmanDisplay();
   updateWordDisplay();
   updateAttemptsDisplay();
   updateGuessedLettersDisplay();
+}
+
+function disableInputAndKeyboard() {
+  submitButton.disabled = true;
+  letterInput.disabled = true;
+  disableVirtualKeyboard();
+}
+
+function enableInputAndKeyboard() {
+  submitButton.disabled = false;
+  letterInput.disabled = false;
+  enableVirtualKeyboard();
 }
 
 function enableVirtualKeyboard() {
@@ -231,6 +250,32 @@ function enableVirtualKeyboard() {
     key.classList.remove('disabled');
     key.disabled = false;
   });
+}
+
+function checkGameOver() {
+  if (attempts === 0) {
+    const losingModal = document.getElementById('losing-modal');
+    const losingMessage = document.getElementById('losing-message');
+    const closeButton = document.querySelector('#losing-modal .close');
+
+    losingMessage.textContent = `Game over! The word was "${word}".`;
+
+    losingModal.style.display = 'block';
+
+    closeButton.onclick = function () {
+      losingModal.style.display = 'none';
+    };
+
+    window.onclick = function (event) {
+      if (event.target === losingModal) {
+        losingModal.style.display = 'none';
+      }
+    };
+
+    return true;
+  }
+
+  return false;
 }
 
 
