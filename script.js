@@ -7,6 +7,8 @@ const resetButton = document.getElementById('reset-button');
 const attemptsDisplay = document.getElementById('attempts');
 const guessedLettersDisplay = document.getElementById('guessed-letters');
 const letterForm = document.getElementById('letter-form');
+const loadingImage = document.getElementById('loading-image');
+
 
 let word = '';
 let attempts = 6;
@@ -22,10 +24,34 @@ const hangmanStages = [
     'images/hangman-stage-6.png',
   ];
 
-async function fetchWord() {
-  const response = await fetch('https://random-word-api.herokuapp.com/word?number=1');
-  const data = await response.json();
-  return data[0];
+async function fetchRandomWord(lengthOption) {
+  let word = '';
+  let minLength, maxLength;
+  switch (lengthOption) {
+    case 'short':
+      minLength = 1;
+      maxLength = 4;
+      break;
+    case 'medium':
+      minLength = 5;
+      maxLength = 10;
+      break;
+    case 'long':
+      minLength = 11;
+      maxLength = Infinity;
+      break;
+    default:
+      minLength = 1;
+      maxLength = 10;
+  }
+
+  do {
+    const response = await fetch('https://random-word-api.herokuapp.com/word?number=1');
+    const words = await response.json();
+    word = words[0];
+  } while (word.length < minLength || word.length > maxLength);
+
+  return word;
 }
 
 function updateHangmanDisplay() {
@@ -48,20 +74,23 @@ function updateGuessedLettersDisplay() {
 }
   
 function checkVictory() {
-    return word.split('').every((letter) => guessedLetters.includes(letter));
+  const victory = word.split('').every((letter) => guessedLetters.includes(letter));
+  if (victory) {
+    const modal = document.getElementById('winning-modal');
+    const closeButton = document.querySelector('.close');
+    modal.style.display = 'block';
+    closeButton.onclick = function () {
+      modal.style.display = 'none';
+    };
+    window.onclick = function (event) {
+      if (event.target === modal) {
+        modal.style.display = 'none';
+      }
+    };
+  }
+  return victory;
 }
-  
-async function initializeGame() {
-    word = await fetchWord();
-    attempts = 6;
-    guessedLetters = [];
-    updateHangmanDisplay();
-    updateWordDisplay();
-    updateAttemptsDisplay();
-    updateGuessedLettersDisplay();
-    message.textContent = '';
-}
-  
+
 letterForm.addEventListener('submit', (event) => {
   event.preventDefault();
   
@@ -91,8 +120,7 @@ letterForm.addEventListener('submit', (event) => {
 });
   
 resetButton.addEventListener('click', () => {
-    initializeGame();
-    submitButton.disabled = false;
+  wordLengthPopup.style.display = 'block';
 });
 
 const virtualKeyboard = document.getElementById('virtual-keyboard');
@@ -113,8 +141,6 @@ function createVirtualKeyboard() {
       key.textContent = letter;
       key.classList.add('virtual-key');
       key.setAttribute('data-letter', letter);
-
-      // Updated event listener for the virtual key click event
       key.addEventListener('click', () => {
         handleLetterGuess(key.textContent, key);
       });
@@ -153,7 +179,6 @@ function handleLetterGuess(letter, virtualKey) {
   }
 }
 
-
 function disableVirtualKeyboard() {
   const keys = document.querySelectorAll('.virtual-key');
   keys.forEach((key) => {
@@ -178,7 +203,52 @@ letterInput.addEventListener('keydown', (event) => {
   }
 });
 
+async function startGame() {
+  const wordLength = document.getElementById('word-length').value;
+  // Show the loading image and hide the hangman image
+  hangmanDisplay.style.display = 'none';
+  loadingImage.style.display = 'block';
+
+  word = await fetchRandomWord(wordLength);
+  attempts = 6;
+  guessedLetters = [];
+  message.textContent = '';
+  enableVirtualKeyboard();
+
+  // Hide the loading image and show the hangman image
+  loadingImage.style.display = 'none';
+  hangmanDisplay.style.display = 'block';
+
+  updateHangmanDisplay();
+  updateWordDisplay();
+  updateAttemptsDisplay();
+  updateGuessedLettersDisplay();
+}
+
+function enableVirtualKeyboard() {
+  const keys = document.querySelectorAll('.virtual-key');
+  keys.forEach((key) => {
+    key.classList.remove('disabled');
+    key.disabled = false;
+  });
+}
+
+
 createVirtualKeyboard();
 
-  
-initializeGame();
+const wordLengthPopup = document.getElementById('word-length-popup');
+const startGameButton = document.getElementById('start-game');
+const wordLengthSelect = document.getElementById('word-length');
+
+wordLengthPopup.style.display = 'block';
+
+startGameButton.addEventListener('click', () => {
+  wordLengthPopup.style.display = 'none';
+  startGame();
+});
+
+wordLengthSelect.addEventListener('change', () => {
+  startGame();
+});
+
+

@@ -7,8 +7,22 @@
   <title>Hangman Game</title>
 </head>
 <body>
-  <h1>Hangman Game</h1>
-  <img id="hangman-display" alt="Hangman stage" />
+<div id="word-length-popup" class="word-length-popup">
+  <div class="word-length-popup-content">
+    <h2>Choose your word length</h2>
+    <label for="word-length">Word Length:</label>
+    <select id="word-length">
+      <option value="short">Short (less than 5)</option>
+      <option value="medium">Medium (5-10)</option>
+      <option value="long">Long (more than 10)</option>
+    </select>
+    <button id="start-game">Start Game</button>
+  </div>
+</div>
+
+<h1>Hangman Game</h1>
+<img id="hangman-display" alt="Hangman stage" />
+<img id="loading-image" src="images/loading-bar.gif" alt="Loading..." style="display:none;">
   <div id="word-display"></div>
   <div id="virtual-keyboard"></div> 
   <form id="letter-form">
@@ -22,7 +36,13 @@
   <div id="guessed-letters"></div>
   <div id="message"></div>
   <button id="reset-button">Reset</button>
-
+  <p>Click the reset button to start a new game.</p>
   <script src="script.js"></script>
+  <div id="winning-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p>You won!</p>
+    </div>
+  </div>
 </body>
 </html>
